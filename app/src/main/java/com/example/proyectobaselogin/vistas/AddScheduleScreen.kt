@@ -16,13 +16,14 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import java.util.Calendar
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun AddScheduleScreen(navController: NavController) {
+fun AddScheduleScreen(navController: NavController, schedulesViewModel: SchedulesViewModel = viewModel()) {
     var eventTitle by remember { mutableStateOf("") }
     var eventDescription by remember { mutableStateOf("") }
 
@@ -86,20 +87,13 @@ fun AddScheduleScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
-            OutlinedTextField(
-                value = eventDescription,
-                onValueChange = { eventDescription = it },
-                label = { Text("Descripción breve") },
-                modifier = Modifier.fillMaxWidth()
-            )
-
             Spacer(modifier = Modifier.weight(1f))
 
             Button(
                 onClick = {
                     if (eventTitle.isNotBlank()) {
-                        // Usamos el repositorio para añadir el nuevo evento
-                        ScheduleRepository.addEvent(eventTitle, eventDescription, eventTime)
+                        // Usamos el ViewModel para añadir el nuevo evento a Firebase
+                        schedulesViewModel.addSchedule(eventTitle, eventDescription, eventTime)
                         // Volvemos a la pantalla anterior, que ahora mostrará el nuevo evento
                         navController.popBackStack()
                     } else {

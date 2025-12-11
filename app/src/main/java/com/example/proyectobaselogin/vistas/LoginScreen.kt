@@ -5,7 +5,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.KeyboardOptions
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.runtime.saveable.rememberSaveable
@@ -56,17 +55,7 @@ fun LoginScreen(navController: NavController) {
                 label = { Text("Correo electrónico") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
-                modifier = Modifier.fillMaxWidth(),
-                trailingIcon = {
-                    if (email.isNotEmpty()) {
-                        IconButton(onClick = { email = "" }) {
-                            Icon(
-                                imageVector = Icons.Default.Clear,
-                                contentDescription = "Limpiar correo"
-                            )
-                        }
-                    }
-                }
+                modifier = Modifier.fillMaxWidth()
             )
 
             Spacer(modifier = Modifier.height(16.dp))
@@ -120,6 +109,21 @@ fun LoginScreen(navController: NavController) {
 
             TextButton(onClick = { navController.navigate("register") }) {
                 Text("¿No tienes cuenta? Regístrate", color = Color(0xFF00BFFF))
+            }
+
+            Spacer(modifier = Modifier.height(16.dp))
+
+
+            // Botón de desarrollo para saltar el login
+            Button(
+                onClick = {
+                    navController.navigate("home") {
+                        popUpTo("login") { inclusive = true }
+                    }
+                },
+                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+            ) {
+                Text("DEV: Ir a Home")
             }
         }
     }

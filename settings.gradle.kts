@@ -19,6 +19,6 @@ dependencyResolutionManagement {
     }
 }
 
-rootProject.name = "ProyectoBaseLogin"
+rootProject.name = "PetEat"
 include(":app")
  
