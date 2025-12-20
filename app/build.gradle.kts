@@ -6,13 +6,13 @@ plugins {
 }
 
 android {
-    namespace = "com.example.proyectobaselogin"
+    namespace = "com.example.peteat"
     compileSdk {
         version = release(36)
     }
 
     defaultConfig {
-        applicationId = "com.example.proyectobaselogin"
+        applicationId = "com.example.peteat"
         minSdk = 29
         targetSdk = 36
         versionCode = 1
@@ -28,6 +28,7 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+            signingConfig = signingConfigs.getByName("debug")
         }
     }
     compileOptions {
@@ -39,6 +40,7 @@ android {
     }
     buildFeatures {
         compose = true
+        buildConfig = true // Habilitamos la generación de la clase BuildConfig
     }
 }
 

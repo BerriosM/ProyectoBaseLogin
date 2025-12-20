@@ -1,5 +1,6 @@
-package com.example.proyectobaselogin.vistas
+package com.example.peteat.vistas
 
+import android.content.pm.ApplicationInfo
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -19,7 +20,11 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.navigation.NavController
+import com.example.peteat.utils.AuditLogger
+import com.example.peteat.utils.InputValidation
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthInvalidUserException
 
 @Composable
 fun LoginScreen(navController: NavController) {
@@ -51,7 +56,7 @@ fun LoginScreen(navController: NavController) {
 
             OutlinedTextField(
                 value = email,
-                onValueChange = { email = it },
+                onValueChange = { email = InputValidation.sanitizeInput(it) },
                 label = { Text("Correo electrónico") },
                 singleLine = true,
                 keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -75,15 +80,33 @@ fun LoginScreen(navController: NavController) {
             Button(
                 onClick = {
                     if (email.isNotBlank() && password.isNotBlank()) {
+                        // Validación local del formato de correo
+                        if (!InputValidation.isValidEmail(email)) {
+                            Toast.makeText(context, "El formato del correo es incorrecto", Toast.LENGTH_SHORT).show()
+                            return@Button
+                        }
+
                         isLoading = true
                         auth.signInWithEmailAndPassword(email, password)
                             .addOnCompleteListener { task ->
                                 if (task.isSuccessful) {
+                                    // A.12.4 Auditoría: Registro de éxito
+                                    AuditLogger.logSecurityEvent(context, "login", "success", email, "Inicio de sesión exitoso")
+
                                     navController.navigate("home") {
                                         popUpTo("login") { inclusive = true }
                                     }
                                 } else {
-                                    Toast.makeText(context, "Error: ${task.exception?.message}", Toast.LENGTH_SHORT).show()
+                                    // A.12.4 Auditoría: Registro de fallo
+                                    AuditLogger.logSecurityEvent(context, "login", "failure", email, task.exception?.message ?: "Error desconocido")
+
+                                    // Manejo de errores personalizados
+                                    val errorMessage = when (task.exception) {
+                                        is FirebaseAuthInvalidUserException -> "El correo no está registrado."
+                                        is FirebaseAuthInvalidCredentialsException -> "Correo o contraseña incorrectos."
+                                        else -> "Error de autenticación: Verifica tus datos."
+                                    }
+                                    Toast.makeText(context, errorMessage, Toast.LENGTH_SHORT).show()
                                 }
                                 isLoading = false
                             }
@@ -113,17 +136,22 @@ fun LoginScreen(navController: NavController) {
 
             Spacer(modifier = Modifier.height(16.dp))
 
+            // Botón de desarrollo para saltar el login (A.14.2: Separación de Entornos)
+            // Verificamos dinámicamente si la app es debuggable. En release esto será false.
+            val isDebug = (context.applicationInfo.flags and ApplicationInfo.FLAG_DEBUGGABLE) != 0
 
-            // Botón de desarrollo para saltar el login
-            Button(
-                onClick = {
-                    navController.navigate("home") {
-                        popUpTo("login") { inclusive = true }
-                    }
-                },
-                colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
-            ) {
-                Text("DEV: Ir a Home")
+            if (isDebug) {
+                Button(
+                    onClick = {
+                        AuditLogger.logSecurityEvent(context, "bypass_login", "warning", "dev_user", "Acceso directo a home")
+                        navController.navigate("home") {
+                            popUpTo("login") { inclusive = true }
+                        }
+                    },
+                    colors = ButtonDefaults.buttonColors(containerColor = MaterialTheme.colorScheme.secondary)
+                ) {
+                    Text("DEV: Ir a Home")
+                }
             }
         }
     }

@@ -1,4 +1,4 @@
-package com.example.proyectobaselogin.vistas
+package com.example.peteat.vistas
 
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
@@ -7,13 +7,9 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.List
 import androidx.compose.material.icons.filled.Circle
-import androidx.compose.material.icons.filled.Close
 import androidx.compose.material.icons.filled.Download
 import androidx.compose.material.icons.filled.Logout
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.Schedule
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,7 +19,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.text.font.FontWeight
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.lifecycle.viewmodel.compose.viewModel
@@ -99,60 +94,6 @@ fun HomeScreen(navController: NavController, homeViewModel: HomeViewModel = view
                     actions = {}
                 )
             },
-            floatingActionButton = {
-                Column(
-                    horizontalAlignment = Alignment.End,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                    if (isMenuExpanded) {
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Text(
-                                "Ingresar Horario",
-                                color = Color.White,
-                                modifier = Modifier
-                                    .background(Color.Black.copy(alpha = 0.3f), shape = RoundedCornerShape(4.dp))
-                                    .padding(8.dp)
-                            )
-                            FloatingActionButton(
-                                onClick = { navController.navigate("add_schedule") },
-                                containerColor = topColor
-                            ) {
-                                Icon(Icons.Default.Schedule, contentDescription = "Ingresar Horario")
-                            }
-                        }
-                        Row(
-                            verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(8.dp)
-                        ) {
-                            Text(
-                                "Ver Horarios",
-                                color = Color.White,
-                                modifier = Modifier
-                                    .background(Color.Black.copy(alpha = 0.3f), shape = RoundedCornerShape(4.dp))
-                                    .padding(8.dp)
-                            )
-                            FloatingActionButton(
-                                onClick = { navController.navigate("schedules") },
-                                containerColor = topColor
-                            ) {
-                                Icon(Icons.AutoMirrored.Filled.List, contentDescription = "Ver Horarios")
-                            }
-                        }
-                    }
-                    FloatingActionButton(
-                        onClick = { isMenuExpanded = !isMenuExpanded },
-                        containerColor = topColor
-                    ) {
-                        Icon(
-                            imageVector = if (isMenuExpanded) Icons.Default.Close else Icons.Default.Menu,
-                            contentDescription = "Menu"
-                        )
-                    }
-                }
-            }
         ) { innerPadding ->
             Column(
                 modifier = Modifier

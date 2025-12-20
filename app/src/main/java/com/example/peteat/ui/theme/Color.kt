@@ -1,4 +1,4 @@
-package com.example.proyectobaselogin.ui.theme
+package com.example.peteat.ui.theme
 
 import androidx.compose.ui.graphics.Color
 

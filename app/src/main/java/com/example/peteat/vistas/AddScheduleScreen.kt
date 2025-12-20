@@ -1,4 +1,4 @@
-package com.example.proyectobaselogin.vistas
+package com.example.peteat.vistas
 
 import android.app.TimePickerDialog
 import android.widget.Toast
@@ -44,7 +44,7 @@ fun AddScheduleScreen(navController: NavController, schedulesViewModel: Schedule
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Ingresar Horario") },
+                title = { Text("Ingresar alarma") },
                 navigationIcon = {
                     IconButton(onClick = { navController.popBackStack() }) {
                         Icon(Icons.Default.ArrowBack, contentDescription = "Atrás")
@@ -81,7 +81,7 @@ fun AddScheduleScreen(navController: NavController, schedulesViewModel: Schedule
             OutlinedTextField(
                 value = eventTitle,
                 onValueChange = { eventTitle = it },
-                label = { Text("Título del evento") },
+                label = { Text("Título") },
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -105,7 +105,7 @@ fun AddScheduleScreen(navController: NavController, schedulesViewModel: Schedule
                     .height(50.dp),
                 colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF00BFFF)),
             ) {
-                Text("Guardar Horario", color = Color.White)
+                Text("Guardar Alarma", color = Color.White)
             }
         }
     }

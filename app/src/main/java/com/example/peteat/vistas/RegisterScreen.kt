@@ -1,6 +1,5 @@
-package com.example.proyectobaselogin.vistas
+package com.example.peteat.vistas
 
-import android.util.Patterns
 import android.widget.Toast
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardOptions
@@ -21,6 +20,7 @@ import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.example.peteat.utils.InputValidation
 import com.google.firebase.auth.FirebaseAuth
 
 @Composable
@@ -53,7 +53,7 @@ fun RegisterScreen(navController: NavController) {
         // Correo
         OutlinedTextField(
             value = email,
-            onValueChange = { email = it.trim() },
+            onValueChange = { email = InputValidation.sanitizeInput(it) }, // A.12.3 Sanitización
             label = { Text("Correo electrónico") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Email),
@@ -66,7 +66,7 @@ fun RegisterScreen(navController: NavController) {
         OutlinedTextField(
             value = password,
             onValueChange = { password = it },
-            label = { Text("Contraseña (mín. 6)") },
+            label = { Text("Contraseña (segura)") },
             singleLine = true,
             keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Password),
             visualTransformation = if (showPass) VisualTransformation.None else PasswordVisualTransformation(),
@@ -108,13 +108,13 @@ fun RegisterScreen(navController: NavController) {
         // Registrar
         Button(
             onClick = {
-                // Validaciones
-                if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                // A.12.3 Validación de Entrada
+                if (!InputValidation.isValidEmail(email)) {
                     Toast.makeText(context, "Correo no válido", Toast.LENGTH_SHORT).show()
                     return@Button
                 }
-                if (password.length < 6) {
-                    Toast.makeText(context, "La contraseña debe tener al menos 6 caracteres", Toast.LENGTH_SHORT).show()
+                if (!InputValidation.isValidPassword(password)) {
+                    Toast.makeText(context, "La contraseña debe tener 8 caracteres, mayúscula, minúscula, número y símbolo.", Toast.LENGTH_LONG).show()
                     return@Button
                 }
                 if (password != confirm) {

@@ -1,4 +1,4 @@
-package com.example.proyectobaselogin.vistas
+package com.example.peteat.vistas
 
 import androidx.compose.ui.graphics.Color
 

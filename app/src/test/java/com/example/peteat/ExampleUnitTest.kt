@@ -1,4 +1,4 @@
-package com.example.proyectobaselogin
+package com.example.peteat
 
 import org.junit.Test
 

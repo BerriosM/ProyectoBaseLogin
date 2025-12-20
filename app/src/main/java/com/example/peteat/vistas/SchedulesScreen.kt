@@ -1,4 +1,4 @@
-package com.example.proyectobaselogin.vistas
+package com.example.peteat.vistas
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
@@ -8,9 +8,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.*
 import androidx.compose.material3.*
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.* // Importación necesaria para remember, mutableStateOf, setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
@@ -96,6 +94,33 @@ fun SchedulesScreen(navController: NavController, schedulesViewModel: SchedulesV
 
 @Composable
 fun ScheduleItem(event: ScheduleEvent, onDelete: () -> Unit, onEdit: () -> Unit) {
+    // 1. Estado para controlar la visibilidad del diálogo
+    var showDialog by remember { mutableStateOf(false) }
+
+    // 2. Componente de Diálogo de Alerta
+    if (showDialog) {
+        AlertDialog(
+            onDismissRequest = { showDialog = false },
+            title = { Text(text = "Eliminar Horario") },
+            text = { Text("¿Estás seguro de que deseas eliminar este horario?") },
+            confirmButton = {
+                TextButton(
+                    onClick = {
+                        onDelete() // Ejecuta la acción de eliminar
+                        showDialog = false // Cierra el diálogo
+                    }
+                ) {
+                    Text("Eliminar", color = Color.Red)
+                }
+            },
+            dismissButton = {
+                TextButton(onClick = { showDialog = false }) {
+                    Text("Cancelar")
+                }
+            }
+        )
+    }
+
     Row(
         modifier = Modifier.fillMaxWidth(),
         verticalAlignment = Alignment.CenterVertically
@@ -131,7 +156,12 @@ fun ScheduleItem(event: ScheduleEvent, onDelete: () -> Unit, onEdit: () -> Unit)
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(event.title, fontWeight = FontWeight.Bold, fontSize = 18.sp, color = Color.White)
-                        IconButton(onClick = onDelete, modifier = Modifier.size(24.dp)) {
+                        
+                        // 3. Botón que activa el diálogo
+                        IconButton(
+                            onClick = { showDialog = true }, 
+                            modifier = Modifier.size(24.dp)
+                        ) {
                             Icon(Icons.Default.Delete, contentDescription = "Eliminar", tint = Color.White.copy(alpha = 0.7f))
                         }
                     }
